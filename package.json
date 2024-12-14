@@ -1,0 +1,22 @@
+{
+  "name": "vue-dostributed-monorepo",
+  "version": "0.9.0",
+  "author": {
+    "name": "Benoît LAHOZ",
+    "email": "info@benoitlahoz.io"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.8",
+    "syncpack": "^13.0.0"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "dev": "lerna run dev",
+    "format": "syncpack format"
+  },
+  "workspaces": [
+    "packages/**/*"
+  ]
+}
