@@ -1,18 +1,19 @@
 import type { App } from 'vue';
-import { VueAppInjectionKey } from '@/core/types';
-import type { VueDistributedBootstrapOptions } from '@/core/composables';
+import { ContextInjectionKey, VueDistributedPluginOptions } from '@/core/types';
+import { Context } from '@/core/internal';
 import { useRemoteImport } from '@/core/composables';
 
 import PluginLoader from '@/core/components/PluginLoader.vue';
 import TryComponent from '@/core/components/TryComponent.vue';
 
 const plugin = {
-  install(app: App, options?: VueDistributedBootstrapOptions) {
-    const { bootstrap } = useRemoteImport();
-    bootstrap(options);
+  install(app: App, options?: VueDistributedPluginOptions) {
+    Context.app = app;
+    Context.logLevel = options?.logLevel || 'verbose';
+    Context.provide(options?.provide);
 
-    // Make 'app' available anywhere.
-    app.provide(VueAppInjectionKey, app);
+    // Make context available anywhere.
+    app.provide(ContextInjectionKey, Context);
 
     // Install library components.
     app.component('PluginLoader', PluginLoader);

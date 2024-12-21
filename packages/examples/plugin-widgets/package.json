@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.170.0",
+    "@vitejs/plugin-vue": "^4.5.0",
     "@vue/language-plugin-pug": "^2.1.10",
     "pug": "^3.0.3",
     "sass-embedded": "^1.81.0",

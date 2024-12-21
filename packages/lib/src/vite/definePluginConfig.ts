@@ -9,10 +9,9 @@ import type {
   ResolveOptions,
 } from 'vite';
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
 import injectCss from 'vite-plugin-css-injected-by-js';
 import injectImages from '@rollup/plugin-image';
-import VitePluginVueDistributed from './vite-plugin-vue-distributed';
+import VitePluginVueDistributed from './vite-plugin-vue-distributed/vite-plugin-vue-distributed';
 
 type AllResolveOptions = ResolveOptions & {
   alias?: AliasOptions;
@@ -27,6 +26,7 @@ export interface VueDistributedPluginConfig {
     css?: false | undefined;
     images?: false | undefined;
   };
+  archive?: false;
   plugins?: PluginOption[];
   resolve?: AllResolveOptions;
   esbuild?: false | ESBuildOptions | undefined;
@@ -35,6 +35,7 @@ export interface VueDistributedPluginConfig {
 const viteConfig = (config: VueDistributedPluginConfig) => {
   const cleanName = config.name.trim();
   const plugins = config.plugins || [];
+  const archive = config.archive === false ? false : true;
 
   return defineConfig({
     build: {
@@ -58,8 +59,9 @@ const viteConfig = (config: VueDistributedPluginConfig) => {
       },
     },
     plugins: [
-      VitePluginVueDistributed(),
-      vue(),
+      VitePluginVueDistributed({
+        archive,
+      }),
       typeof config.inject?.images === 'undefined' ? injectImages() : undefined,
       typeof config.inject?.css === 'undefined' ? injectCss() : undefined,
 

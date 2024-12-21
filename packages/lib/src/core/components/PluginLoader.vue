@@ -5,32 +5,34 @@ export default {
 </script>
 
 <script setup async lang="ts">
-import type { App, Plugin } from 'vue';
+import type { Plugin } from 'vue';
 import { inject } from 'vue';
-import { VueAppInjectionKey } from '@/core/types';
-import { useRemoteImport } from '@/core/composables';
+import { ContextInjectionKey } from '@/core/types';
+import { AbstractContext } from '../internal/context.abstract';
 
-const { url } = defineProps<{ url: string }>();
-const { getPlugin, cleanImports, logger } = useRemoteImport();
+const { url, type = 'umd' } = defineProps<{
+  url: string;
+  type: 'umd' | 'zip';
+}>();
 
 try {
-  const app: App | undefined = inject(VueAppInjectionKey);
-  if (!app) {
-    logger.error(
+  const context: AbstractContext | undefined = inject(ContextInjectionKey);
+  if (!context) {
+    console.error(
       new Error(`VueDistributed plugin may not have been installed properly.`)
     );
   } else {
     // Get the plugin at given URL.
-    const plugin: Plugin = await getPlugin(url);
+    const plugin: Plugin = await context.pluginByURL(url, type);
 
     // Use it: will warn if already installed, depending on internal logger level.
-    app.use(plugin);
+    context.app.use(plugin);
 
     // Make sure to tear-down ALL the imported scripts before quitting.
-    app.onUnmount(() => cleanImports());
+    context.app.onUnmount(() => context.dispose());
   }
 } catch (err: unknown) {
-  logger.error(err);
+  console.error(err);
 }
 </script>
 

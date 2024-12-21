@@ -3,17 +3,13 @@
  * Warning: do not import external dependencies here, unless you add the to the global window's scope.
  */
 
+import PluginLoader from '../../../../core/components/PluginLoader.vue';
 import type { ModuleDefinition } from 'vue-distributed';
-import {
-  JokeComponent,
-  WeatherComponent,
-  LoaderComponent,
-  ThreeComponent,
-} from './components';
 
-// Plugins can either export 'const plugin' or 'default'
-
-export const plugin: ModuleDefinition = {
+const foo = 'bar';
+export { foo };
+// : ModuleDefinition
+export const plugin = {
   name: 'MyPlugin',
   version: '1.0.0',
   description: {
@@ -30,16 +26,13 @@ export const plugin: ModuleDefinition = {
   dependencies: { three: '0.170.0' },
 
   components: [
-    // Basic: pass the components directly.
-
-    JokeComponent,
-    ThreeComponent,
+    PluginLoader,
 
     // Minimal component definition.
 
     {
       name: 'LoaderComponent',
-      export: LoaderComponent,
+      export: null,
 
       // Optional: can be string or object, (see below).
 
@@ -51,7 +44,7 @@ export const plugin: ModuleDefinition = {
     {
       name: 'WeatherComponent',
       description: {
-        info: `A widget that fetches weather.`,
+        info: `A widget that fetches weather.`, // FIXME: avec un template literal `` le reduceProperty ne marche pas.
         authors: [
           {
             name: 'Benoît Lahoz',
@@ -67,7 +60,7 @@ export const plugin: ModuleDefinition = {
           },
         ],
       },
-      export: WeatherComponent,
+      export: null,
     },
 
     // Invalid object will be bypassed with warning.
@@ -79,3 +72,9 @@ export const plugin: ModuleDefinition = {
 // Plugins can either export 'const plugin' or 'default'
 
 export { plugin as default };
+/*
+export default {
+  // foo: foo,
+  foo,
+};
+*/

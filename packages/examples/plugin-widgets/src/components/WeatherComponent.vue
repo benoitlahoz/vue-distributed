@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { PropType } from 'vue';
 import { onBeforeMount, ref } from 'vue';
 import InternalCard from './internals/InternalCard.vue';
 
@@ -11,69 +10,54 @@ import IsCloudyNight from '@/assets/2682846_cloud_cloudy_forecast_moon_night_ico
 import Precipitation from '@/assets/2682835_cloud_cloudy_forecast_precipitation_rain_icon.svg';
 import Wind from '@/assets/2682842_breeze_fast_speed_weather_wind_icon.svg';
 
-// const { message = 'No message' } = defineProps<{ message: string }>();
-// For the purpose of this example, try this.
-defineProps({
-  message: {
-    type: String,
-    default: 'No message',
-  },
-  other: {
-    type: Number,
-    required: true,
-  },
-  likes: Number,
-  metadata: null,
-  callback: Function as PropType<(id: number) => void>,
-  bookA: {
-    type: Object as PropType<any>,
-    // Make sure to use arrow functions if your TypeScript version is less than 4.7
-    default: () => ({
-      title: 'Arrow Function Expression',
-    }),
-    validator: (book: any) => !!book.title,
-  },
-});
+const { message = 'No message' } = defineProps<{ message: string }>();
 
 const weather = ref();
 const mainIcon = ref(IsDay);
 
-const fetchWeather = () => {
-  navigator.geolocation.getCurrentPosition(async (position: any) => {
-    const lat = position.coords.latitude.toFixed(2);
-    const long = position.coords.longitude.toFixed(2);
+const fetchWeather = async () => {
+  navigator.geolocation.getCurrentPosition(
+    // Success callback.
+    async (position: any) => {
+      const lat = position.coords.latitude.toFixed(2);
+      const long = position.coords.longitude.toFixed(2);
 
-    const weatherRes = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m,is_day,rain,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto`
-    );
-    weather.value = await weatherRes.json();
-    // console.log('WEATHER', weather.value);
+      const weatherRes = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m,is_day,rain,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto`
+      );
+      weather.value = await weatherRes.json();
+      // console.log('WEATHER', weather.value);
 
-    switch (weather.value.current.is_day) {
-      case 0: {
-        // Night
-        if (weather.value.current.cloud_cover > 0) {
-          mainIcon.value = IsCloudyNight;
-        } else {
-          mainIcon.value = IsNight;
+      switch (weather.value.current.is_day) {
+        case 0: {
+          // Night
+          if (weather.value.current.cloud_cover > 20) {
+            mainIcon.value = IsCloudyNight;
+          } else {
+            mainIcon.value = IsNight;
+          }
+          break;
         }
-        break;
-      }
-      case 1: {
-        // Day
-        if (weather.value.current.cloud_cover > 0) {
-          mainIcon.value = IsCloudyDay;
-        } else {
-          mainIcon.value = IsDay;
+        case 1: {
+          // Day
+          if (weather.value.current.cloud_cover > 20) {
+            mainIcon.value = IsCloudyDay;
+          } else {
+            mainIcon.value = IsDay;
+          }
+          break;
         }
-        break;
       }
+    },
+    (err: unknown) => {
+      console.error('An error occurred.');
+      console.error(err);
     }
-  });
+  );
 };
 
 onBeforeMount(async () => {
-  fetchWeather();
+  await fetchWeather();
 });
 </script>
 
@@ -81,6 +65,7 @@ onBeforeMount(async () => {
 internal-card 
   template(
     v-slot:header,
+    @click="fetchWeather"
   ).header-slot
     .main-header(v-if="weather") 
       img(
@@ -104,6 +89,7 @@ internal-card
       img(:src="Wind") 
       h2(v-if="weather") {{ weather.current.wind_speed_10m }} {{ weather.current_units.wind_speed_10m }}
     // pre {{ weather }}
+  .weather-resume(v-else) Click to fetch.
   template(v-slot:footer)
     .weather-footer(
       v-if="weather"

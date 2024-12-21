@@ -1,9 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRemoteImport } from 'vue-distributed';
 
-const { getComponentsNames } = useRemoteImport();
+const { getComponentsNames /* registeredPlugins  , compareVersion */ } =
+  useRemoteImport();
 
+const baseURL = window.location.href;
+const pluginURL = `${baseURL}vue-plugin-widgets.zip`;
+/*
+watch(
+  () => [registeredPlugins.value],
+  () => {
+    // console.log('REGISTERED', registeredPlugins.value);
+    if (registeredPlugins.value.length > 0) {
+      // console.log('COMPARE');
+      // console.log(compareVersion(registeredPlugins.value[0]));
+    }
+  },
+  { immediate: true, deep: true }
+);
+*/
 const jokePlugin = ref();
 const jokeLoading = ref(false);
 
@@ -13,32 +29,39 @@ const onJokeLoading = (loading: boolean) => {
 </script>
 
 <template lang="pug">
-.example-container
+suspense
+  plugin-loader(:url="pluginURL", type="zip")
+    .example-container
 
-  .example-widgets
-    weather-component(message="Message from 'App'").widget
+      .example-widgets
+        // Use custom wrapper component to show imported one or discard if it wasn't imported (reactive).
+        try-component(is="DoesNotExist").widget
+        try-component(is="WeatherComponent", message="Message from 'App'").widget
 
-    joke-component(
-      ref="jokePlugin",
-      @loading="onJokeLoading"
-    ).widget.joke.relative
-      // Import a registered component in the slot.
-      // Here it could be loader-component(...) as the component has been registered in main.ts
-      component(is="LoaderComponent", v-if="jokeLoading").loader-component
-      template(v-slot:footer)
-        .joke-footer
-          button(
-            @click="async () => await jokePlugin.fetchJoke()"
-          ) Fetch 
+        component(
+          is="JokeComponent",
+          ref="jokePlugin",
+          @loading="onJokeLoading"
+        ).widget.joke.relative
 
-  .registered {{ `${getComponentsNames().length} component(s) registered: ${getComponentsNames().join(', ')}` }}
-  .logo-container   
-    img(
-      src="/vite.svg"
-    ).logo.vite 
-    img(
-      src="/vue.svg"
-    ).logo.vue 
+          // Import another registered component in the slot.
+          component(is="LoaderComponent", v-if="jokeLoading").loader-component
+          template(v-slot:footer)
+            .joke-footer
+              button(
+                @click="async () => await jokePlugin.fetchJoke()"
+              ) Fetch 
+
+        try-component(is="ThreeComponent").widget
+
+      .registered {{ `${getComponentsNames().length} component(s) registered: ${getComponentsNames().join(', ')}` }}
+      .logo-container   
+        img(
+          src="/vite.svg"
+        ).logo.vite 
+        img(
+          src="/vue.svg"
+        ).logo.vue 
 </template>
 
 <style lang="sass">

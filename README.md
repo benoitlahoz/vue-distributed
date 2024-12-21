@@ -16,4 +16,8 @@ yarn add vue-ditributed
 
 ### Create plugin
 
+#### Dependencies
+
+A plugin can bundle all dependencies it needs to consume, but this is strongly discouraged, unless the plugin is aimed to provide a global context for a dependency.
+
 ### Load & consume plugin

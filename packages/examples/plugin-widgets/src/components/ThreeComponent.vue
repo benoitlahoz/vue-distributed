@@ -16,7 +16,6 @@ watch(
       nextTick(() => {
         const width = el.offsetWidth;
         const height = el.offsetHeight;
-        console.log(width, height);
 
         const camera = new three.PerspectiveCamera(
           70,

@@ -1,104 +1,113 @@
 import type { Component, Directive } from 'vue';
-import { VueDistributedBuild } from '@/vite/build.private';
+import { LogLevel } from '@/core/internal/logger';
+// import { VueDistributedBuild } from '@/vite/build.private';
 
 /**
- * Injection key used to provide / inject 'Vue' app.
+ * Injection key used to provide / inject `Context`.
  */
-export const VueAppInjectionKey = Symbol('VueAppInjectionKey');
+export const ContextInjectionKey = Symbol('ContextInjectionKey');
 
 /**
  * Helper type for nullable value.
  */
 export type Nullable<T> = T | null;
 
-export const VuePluginComponentMandatory = {
-  name: 'string',
-  export: 'object',
-};
+/**
+ * A type alias to 'string' for the 'id' of the injected `script` element.
+ */
+export type ScriptId = string;
+
+/**
+ * A type alias to 'string' for dependency name.
+ */
+export type DependencyName = string;
+
+/**
+ * A type alias to 'string' for dependency version.
+ */
+export type DependencyVersion = string;
+
+export interface VersionCompareResult {
+  plugin: string;
+  library: string;
+  state: string & ('equal' | 'older' | 'newer' | 'unknown');
+}
 
 /**
  * Author or contributor definition.
+ *
+ * @interface AuthorDescription
+ *
+ * @member { string | null } `name` The name of the author or contributor.
+ * @member { string | null | undefined } `url` An url for the author or contributor.
+ * @member { string | null | undefined } `email` Author's or contributor's email.
  */
-export interface VuePluginAuthor {
-  /**
-   * The name of the author or contributor.
-   */
+export interface AuthorDescription {
   name: Nullable<string>;
-  /**
-   * An url for the author or contributor.
-   */
   url?: Nullable<string>;
-  /**
-   * Author's or contributor's email.
-   */
   email?: Nullable<string>;
 }
 
-export interface VuePluginDescription {
+export interface GenericDescription {
   info?: Nullable<string>;
-  authors?: Nullable<string | VuePluginAuthor | VuePluginAuthor[]>;
-  contributors?: Nullable<string | VuePluginAuthor[]>;
+  authors?: Nullable<string | AuthorDescription | AuthorDescription[]>;
+  contributors?: Nullable<string | AuthorDescription[]>;
 }
 
-export interface VuePluginComponentEmits {
-  emits?: Nullable<string[]>;
-}
-
-export interface VuePluginComponentProp {
+export interface ComponentProp {
   type?: string;
   default?: Nullable<string>;
   required?: boolean;
   validator?: boolean;
 }
 
-export interface VuePluginComponentDescription extends VuePluginComponentEmits {
-  info?: Nullable<string>;
-  authors?: Nullable<string | VuePluginAuthor | VuePluginAuthor[]>;
-  contributors?: Nullable<string | VuePluginAuthor[]>;
-  props?: Nullable<Record<string, VuePluginComponentProp>>;
-}
+export const ComponentDefinitionMandatoryKeys = {
+  name: 'string',
+  export: 'object',
+};
 
-export interface VuePluginComponent {
+export interface ComponentDefinition {
   name: string;
-  description?: Nullable<string | VuePluginDescription>;
   export: Component;
+
+  description?: Nullable<string | GenericDescription>;
+  props?: Nullable<Record<string, ComponentProp>>;
+  emits?: Nullable<string[]>;
 }
 
-export interface VuePluginDirective {
+export interface DirectiveDefinition {
   name: string;
-  description?: Nullable<string | VuePluginDescription>;
+  description?: Nullable<string | GenericDescription>;
   export: Directive;
 }
 
-export interface VuePluginDefinition {
+export interface ModuleDefinition {
   name: string;
-  description?: Nullable<string | VuePluginDescription>;
+  description?: Nullable<string | GenericDescription>;
   version?: Nullable<string>;
   category?: Nullable<string>;
-  components?: (Component | VuePluginComponent)[];
-  directives?: VuePluginDirective[];
-  dependencies?: string[];
+  components?: (Component | ComponentDefinition)[];
+  directives?: DirectiveDefinition[];
+  dependencies?: Record<DependencyName, DependencyVersion>;
 
   // Will be set at runtime when registered.
-  __build?: never;
+  // __build?: never;
 }
 
 // TODO: inject a global 'PluginContext' that contains all properties the end user needs to define
 // and encourage the plugins creators to have a prop on thei components to load this context and
 // get it.
-export interface VuePluginRegistered
-  extends Omit<VuePluginDefinition, 'components' | '__build'> {
+export interface RegisteredModuleDefinition
+  extends Omit<ModuleDefinition, 'components' | '__build'> {
   path: string;
   loaded: number;
-  components: (VuePluginComponent &
-    VuePluginComponentProp &
-    VuePluginComponentEmits)[];
+  components: (ComponentDefinition & ComponentProp)[];
+  sri: string;
 
-  __build: VueDistributedBuild;
+  // __build: VueDistributedBuild;
 }
 
-export interface VuePluginVersionCompare {
-  plugin: string;
-  library: string;
-  state: string & ('equal' | 'older' | 'newer' | 'unknown');
+export interface VueDistributedPluginOptions {
+  logLevel?: keyof typeof LogLevel;
+  provide?: Record<string, any>;
 }

@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { definePluginConfig } from 'vue-distributed/vite';
+import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
 
 // Only for demo.
@@ -12,71 +13,10 @@ export default () =>
   definePluginConfig({
     name: 'vue-plugin-widgets',
     entry: resolve(__dirname, 'src/index.ts'),
+    // archive: false, // Archive is true by default.
     external: ['three'],
     plugins: [
-      dts({
-        rollupTypes: true,
-        insertTypesEntry: true,
-      }),
-
-      // Only for this example executed in the monorepo, to allow preview.
-      // Remove in production.
-
-      viteStaticCopy({
-        targets: [
-          {
-            src: 'dist/vue-plugin-widgets.umd.js',
-            dest: '../../app-vite-serve/public',
-          },
-        ],
-      }),
-    ],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-      },
-    },
-  });
-/*
-
-// With usual 'vite' config.
-
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import dts from 'vite-plugin-dts';
-import injectCss from 'vite-plugin-css-injected-by-js';
-import injectImages from '@rollup/plugin-image';
-import VitePluginVueDistributed from 'vue-distributed/vite';
-
-export default () => {
-  return defineConfig({
-    build: {
-      lib: {
-        formats: ['umd'],
-        entry: resolve(__dirname, 'src/index.ts'),
-        name: 'vue-plugin-widgets',
-      },
-      minify: 'terser',
-      target: 'esnext',
-      rollupOptions: {
-        output: {
-          exports: 'named',
-          globals: {
-            vue: 'Vue',
-            'vue-plugin-widgets': 'vue-plugin-widgets',
-          },
-        },
-        external: ['vue', 'vue-distributed'],
-      },
-    },
-    plugins: [
-      VitePluginVueDistributed(),
       vue(),
-      injectImages(),
-      injectCss(),
-
       dts({
         rollupTypes: true,
         insertTypesEntry: true,
@@ -91,6 +31,14 @@ export default () => {
             src: 'dist/vue-plugin-widgets.umd.js',
             dest: '../../app-vite-serve/public',
           },
+          {
+            src: 'dist/vue-plugin-widgets.umd.js.sri',
+            dest: '../../app-vite-serve/public',
+          },
+          {
+            src: 'dist/vue-plugin-widgets.zip',
+            dest: '../../app-vite-serve/public',
+          },
         ],
       }),
     ],
@@ -100,5 +48,3 @@ export default () => {
       },
     },
   });
-};
-*/
