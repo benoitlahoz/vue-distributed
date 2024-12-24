@@ -65,7 +65,7 @@
     "build:plugin": "vite build --config vite.plugin.config.mts",
     "test": "vitest"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/core/index.d.ts",
   "dependencies": {
     "jszip": "^3.10.1"
   },
