@@ -30,7 +30,9 @@ export default () => {
         ],
       },
     },
-    plugins: [VitePluginInternal(), dts()],
+    plugins: [VitePluginInternal(), dts({
+      rollupTypes: false
+    })],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),

@@ -39,7 +39,9 @@ export default () => {
       vue(),
       // Generate a subresource integrity hash for 'umd' version of the bundle.
       manifestSRI(),
-      dts(),
+      dts({
+        rollupTypes: false
+      }),
     ],
     resolve: {
       alias: {

@@ -1,9 +1,28 @@
 {
   "name": "vue-distributed",
-  "version": "0.9.411",
+  "version": "0.9.419",
   "author": {
-    "name": "Benoît LAHOZ"
+    "name": "Benoît LAHOZ",
+    "email": "info@benoitlahoz.io"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benoitlahoz/vue-distributed"
+  },
+  "bugs": {
+    "url": "https://github.com/benoitlahoz/vue-distributed/issues"
+  },
+  "description": "A library to load Vue 3 libraries from remote address.",
+  "keywords": [
+    "vue",
+    "plugin",
+    "distributed",
+    "component",
+    "vue 3",
+    "library",
+    "remote",
+    "repository"
+  ],
   "devDependencies": {
     "@rollup/plugin-image": "^3.0.3",
     "@types/archiver": "^6.0.3",
@@ -40,7 +59,6 @@
   "license": "MIT",
   "main": "./dist/vue-distributed.umd.js",
   "module": "./dist/vue-distributed.mjs",
-  "private": true,
   "scripts": {
     "prebuild": "npm version patch",
     "build": "rimraf ./dist && vite build && yarn build:plugin",
@@ -50,5 +68,10 @@
   "types": "./dist/index.d.ts",
   "dependencies": {
     "jszip": "^3.10.1"
-  }
+  },
+  "files": [
+    "/dist/**/*.*",
+    "package.json",
+    "README.md"
+  ]
 }
