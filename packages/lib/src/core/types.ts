@@ -84,7 +84,7 @@ export interface ModuleDefinition {
   name: string;
   description?: Nullable<string | GenericDescription>;
   version?: Nullable<string>;
-  category?: Nullable<string>;
+  metadata?: Record<string, any>;
   components?: (Component | ComponentDefinition)[];
   directives?: DirectiveDefinition[];
   dependencies?: Record<DependencyName, DependencyVersion>;
