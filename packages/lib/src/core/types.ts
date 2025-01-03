@@ -1,6 +1,5 @@
 import type { Component, Directive } from 'vue';
 import { LogLevel } from '@/core/internal/logger';
-// import { VueDistributedBuild } from '@/vite/build.private';
 
 /**
  * Injection key used to provide / inject `Context`.
@@ -89,22 +88,17 @@ export interface ModuleDefinition {
   components?: (Component | ComponentDefinition)[];
   directives?: DirectiveDefinition[];
   dependencies?: Record<DependencyName, DependencyVersion>;
-
-  // Will be set at runtime when registered.
-  // __build?: never;
 }
 
 // TODO: inject a global 'PluginContext' that contains all properties the end user needs to define
 // and encourage the plugins creators to have a prop on thei components to load this context and
 // get it.
 export interface RegisteredModuleDefinition
-  extends Omit<ModuleDefinition, 'components' | '__build'> {
+  extends Omit<ModuleDefinition, 'components'> {
   path: string;
   loaded: number;
   components: (ComponentDefinition & ComponentProp)[];
   sri: string;
-
-  // __build: VueDistributedBuild;
 }
 
 export interface VueDistributedPluginOptions {

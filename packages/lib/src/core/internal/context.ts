@@ -182,7 +182,9 @@ class _Context implements AbstractContext {
       const clean = Formatter.cleanPath(url);
       const isZip = clean.endsWith('.zip') && suffix === 'zip';
 
-      const name = Formatter.libraryNameFromUrl(url, suffix);
+      // TODO: decide of the format of the 'zip' file and stop relying on 'umd' suffix.
+      // TODO: read the json to get all info.
+      const name = Formatter.libraryNameFromUrl(url, 'umd'); // suffix);
       if (!name) {
         throw new Error(
           `Library name is not valid for url '${url}' with suffix '${suffix}'.`
@@ -215,20 +217,25 @@ class _Context implements AbstractContext {
         const sri = await res.text();
         let module;
         if (isZip) {
+          this._logger.info(`Importing zip library with name '${name}'.`)
+
           module = await ZipModuleImporter.import(
             clean,
             name,
             this._scriptsIds
           );
         } else {
+          this._logger.info(`Importing umd library with name '${name}'.`)
           module = await URLModuleImporter.import(clean, sri, this._scriptsIds);
         }
 
         // Module must export its definition with a variable called 'plugin' or as 'default'.
+        // TODO: Read the JSON to get exported function name.
         const imported = module ? module.plugin || module.default : undefined;
 
         if (imported) {
           // Register the module.
+
           const registered = RegisteredModule.of(clean, sri, imported);
           this._modules.value.push(registered);
 

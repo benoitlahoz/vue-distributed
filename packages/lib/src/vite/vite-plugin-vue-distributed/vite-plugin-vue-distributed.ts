@@ -11,8 +11,6 @@ import { createLogger } from 'vite';
 import { cyan, green, yellow } from 'kolorist';
 import ZipArchiver from 'archiver';
 
-// @ts-expect-error Will be used by injected code.
-import { VueDistributedModuleVersionKey } from '@/vite/build.private';
 import { parse } from './entry-parser';
 
 const SRI_FILE_EXTENSION = 'sri';
@@ -34,7 +32,7 @@ const VitePluginVueDistributed = (
 
   let outputDir: string;
   let outputFile: string;
-  let outputJson: string;
+  let outputJson: Record<string, any>;
 
   return {
     name: pluginName,
@@ -62,9 +60,6 @@ const VitePluginVueDistributed = (
           green(`\n${logPrefix} Injecting identifiers in entry file...`)
         );
 
-        // Warning: do NOT remove, 'vue-distributed' version data will be injected at its build time.
-        /**----$_vue-distributed-build-inject_$----**/
-
         const parseResult = parse(entry);
         if (parseResult.err) {
           logger.warn(
@@ -72,34 +67,17 @@ const VitePluginVueDistributed = (
               `\n${logPrefix} Entry file could not be parsed. JSON file will be empty.`
             )
           );
-          outputJson = '{}';
+          outputJson = {};
         } else {
           const res = parseResult.res!;
 
-          // FIXME:  For object keys (exports) tralala.
-          const components =
-            typeof res.components !== 'undefined'
-              ? res.components.map((component: any) => {
-                  switch (typeof component) {
-                    case 'string':
-                      return component;
-                    case 'object':
-                      return component.name;
-                  }
-                })
-              : false;
-
-          const directives = typeof res.directives !== 'undefined';
-
-          const obj = {
+          outputJson = {
             exports: {
               ...res,
-              components,
-              directives,
             },
+            // Warning: do NOT remove, 'vue-distributed' version data will be injected at its build time.
+            /**----$_vue-distributed-build-inject_$----**/
           };
-
-          outputJson = JSON.stringify(obj, null, 2);
         }
       }
 
@@ -146,7 +124,12 @@ const VitePluginVueDistributed = (
         `sha384-${hash}`
       );
 
-      writeFileSync(resolve(outputDir, `${outputFile}.json`), outputJson);
+      outputJson = {
+        ...outputJson,
+        sri: `sha384-${hash}`
+      }
+
+      writeFileSync(resolve(outputDir, `${outputFile}.json`), JSON.stringify(outputJson, null, 2));
 
       if (archive) {
         // Compress.
@@ -159,15 +142,7 @@ const VitePluginVueDistributed = (
 const zip = async (dir: string, file: string): Promise<void> => {
   logger.info(green(`\n${logPrefix} Compressing files...`));
 
-  const matchFile = file.match(/^(.*?)\.umd/);
-  if (!matchFile) {
-    throw new Error(
-      `Output file name is malformed and must contain 'umd' suffix.`
-    );
-  }
-
-  const outFile = matchFile[1];
-  const output = createWriteStream(join(dir, `${outFile}.zip`));
+  const output = createWriteStream(join(dir, `${file}.zip`));
   const archive = ZipArchiver('zip', {
     zlib: { level: 9 },
   });
@@ -194,7 +169,7 @@ const zip = async (dir: string, file: string): Promise<void> => {
 
   const files = readdirSync(dir, { withFileTypes: true });
   for (const item of files) {
-    if (!item.isDirectory()) {
+    if (!item.isDirectory() && item.name.startsWith(file)) {
       archive.append(createReadStream(join(dir, item.name)), {
         name: item.name,
       });

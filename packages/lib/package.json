@@ -1,6 +1,6 @@
 {
   "name": "vue-distributed",
-  "version": "0.9.419",
+  "version": "0.9.431",
   "author": {
     "name": "Benoît LAHOZ",
     "email": "info@benoitlahoz.io"
@@ -26,7 +26,6 @@
   "devDependencies": {
     "@rollup/plugin-image": "^3.0.3",
     "@types/archiver": "^6.0.3",
-    "@types/debug": "^4.1.12",
     "@types/jszip": "^3.4.1",
     "@types/node": "^22.5.5",
     "@vitejs/plugin-vue": "^4.5.0",

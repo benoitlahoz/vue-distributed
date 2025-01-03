@@ -6,7 +6,7 @@ const { getComponentsNames /* registeredPlugins  , compareVersion */ } =
   useRemoteImport();
 
 const baseURL = window.location.href;
-const pluginURL = `${baseURL}vue-plugin-widgets.zip`;
+const pluginURL = `${baseURL}vue-plugin-widgets.umd.js.zip`;
 /*
 watch(
   () => [registeredPlugins.value],

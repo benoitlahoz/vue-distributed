@@ -28,6 +28,7 @@ class _ZipModuleImporter implements AbstractModuleImporter {
       const blob = await res.blob();
       const zip = await JSZip.loadAsync(blob);
 
+      // TODO: Read the json to get files.
       content = await zip.file(`${libraryName}.umd.js`)?.async('string');
       sri = await zip.file(`${libraryName}.umd.js.sri`)?.async('string');
 

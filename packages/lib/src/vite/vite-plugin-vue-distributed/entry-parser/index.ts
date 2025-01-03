@@ -36,8 +36,7 @@ const handleExportDeclarations = (
 
       for (const declaration of declarations) {
         // TODO: check if conforms to ModuleDefinition (declared or not declared in the plugin).
-
-        console.log('TYPE %s\n', declaration.getType().getText());
+        // console.log('TYPE %s\n', declaration.getType().getText());
         declaration.forEachChild((child) => {
           res[name] = reducePropertyToPrimitive(child, project);
         });

@@ -5,6 +5,7 @@
 import type {
   AliasOptions,
   ESBuildOptions,
+  LibraryFormats,
   PluginOption,
   ResolveOptions,
 } from 'vite';
@@ -20,12 +21,14 @@ type AllResolveOptions = ResolveOptions & {
 export interface VueDistributedPluginConfig {
   name: string;
   entry: string;
+  formats?:LibraryFormats[];
   external?: string[];
   globals?: Record<string, string>;
   inject?: {
     css?: false | undefined;
     images?: false | undefined;
   };
+  minify?: false | undefined;
   archive?: false;
   plugins?: PluginOption[];
   resolve?: AllResolveOptions;
@@ -36,15 +39,17 @@ const viteConfig = (config: VueDistributedPluginConfig) => {
   const cleanName = config.name.trim();
   const plugins = config.plugins || [];
   const archive = config.archive === false ? false : true;
+  const minify = config.minify === false ? undefined : 'terser';
+  const formats = config.formats || ['umd']
 
   return defineConfig({
     build: {
       lib: {
-        formats: ['umd'],
+        formats,
         entry: config.entry,
         name: cleanName,
       },
-      minify: 'terser',
+      minify,
       target: 'esnext',
       rollupOptions: {
         output: {

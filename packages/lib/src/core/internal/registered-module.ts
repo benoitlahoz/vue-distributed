@@ -68,7 +68,7 @@ export class RegisteredModule {
           components.push(converted);
         } else {
           Context.warn(
-            `An object passed as component in loaded module is neither a Vue 'Component' or a 'ComponentDefinition'.`
+            `An object passed as component in loaded module is neither a Vue 'Component' nor a 'ComponentDefinition'.`
           );
 
           continue;

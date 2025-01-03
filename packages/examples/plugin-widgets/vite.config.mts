@@ -14,6 +14,7 @@ export default () =>
     name: 'vue-plugin-widgets',
     entry: resolve(__dirname, 'src/index.ts'),
     // archive: false, // Archive is true by default.
+    formats: ['umd', 'es'],
     external: ['three'],
     plugins: [
       vue(),
@@ -36,7 +37,7 @@ export default () =>
             dest: '../../app-vite-serve/public',
           },
           {
-            src: 'dist/vue-plugin-widgets.zip',
+            src: 'dist/vue-plugin-widgets.umd.js.zip',
             dest: '../../app-vite-serve/public',
           },
         ],
