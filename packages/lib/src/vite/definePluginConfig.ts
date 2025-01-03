@@ -18,21 +18,28 @@ type AllResolveOptions = ResolveOptions & {
   alias?: AliasOptions;
 };
 
+export interface VueDistributedPublishConfig {
+  server: string;
+  source?: true;
+  apiKey?: string;
+}
+
 export interface VueDistributedPluginConfig {
   name: string;
   entry: string;
-  formats?:LibraryFormats[];
+  formats?: LibraryFormats[];
   external?: string[];
   globals?: Record<string, string>;
   inject?: {
-    css?: false | undefined;
-    images?: false | undefined;
+    css?: false;
+    images?: false;
   };
   minify?: false | undefined;
   archive?: false;
   plugins?: PluginOption[];
   resolve?: AllResolveOptions;
   esbuild?: false | ESBuildOptions | undefined;
+  publish?: VueDistributedPublishConfig;
 }
 
 const viteConfig = (config: VueDistributedPluginConfig) => {
@@ -40,7 +47,7 @@ const viteConfig = (config: VueDistributedPluginConfig) => {
   const plugins = config.plugins || [];
   const archive = config.archive === false ? false : true;
   const minify = config.minify === false ? undefined : 'terser';
-  const formats = config.formats || ['umd']
+  const formats = config.formats || ['umd'];
 
   return defineConfig({
     build: {
@@ -78,6 +85,5 @@ const viteConfig = (config: VueDistributedPluginConfig) => {
   });
 };
 
-export const definePluginConfig = (config: VueDistributedPluginConfig) => {
-  return viteConfig(config);
-};
+export const definePluginConfig = (config: VueDistributedPluginConfig) =>
+  viteConfig(config);
