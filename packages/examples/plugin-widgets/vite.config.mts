@@ -29,15 +29,7 @@ export default () =>
       viteStaticCopy({
         targets: [
           {
-            src: 'dist/vue-plugin-widgets.umd.js',
-            dest: '../../app-vite-serve/public',
-          },
-          {
-            src: 'dist/vue-plugin-widgets.umd.js.sri',
-            dest: '../../app-vite-serve/public',
-          },
-          {
-            src: 'dist/vue-plugin-widgets.umd.js.zip',
+            src: 'dist/*.*',
             dest: '../../app-vite-serve/public',
           },
         ],
