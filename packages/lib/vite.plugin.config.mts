@@ -3,7 +3,7 @@ import { builtinModules } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import VitePluginInternal from './private/vite-plugin-vue-distributed-internal';
+import VitePluginInternal from './src/vite/vite-plugin-vue-distributed/vite-plugin-vue-distributed-internal';
 
 export default () => {
   return defineConfig({
@@ -30,9 +30,12 @@ export default () => {
         ],
       },
     },
-    plugins: [VitePluginInternal(), dts({
-      rollupTypes: false
-    })],
+    plugins: [
+      VitePluginInternal(),
+      dts({
+        rollupTypes: false,
+      }),
+    ],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
