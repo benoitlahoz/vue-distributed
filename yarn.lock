@@ -6622,7 +6622,7 @@ vscode-uri@^3.0.8:
   integrity sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==
 
 vue-distributed@^0.9.0, "vue-distributed@file:/Users/benoitlahoz/Documents/oz/vue-distributed/packages/lib":
-  version "0.9.431"
+  version "0.9.438"
   resolved "file:packages/lib"
   dependencies:
     jszip "^3.10.1"
