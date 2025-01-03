@@ -34,7 +34,7 @@ const loadPackageData = (root = process.cwd()): PackageData | null => {
 
 const plugin = (): Plugin => {
   return {
-    name: 'add-vue-distributed-object',
+    name: 'vite-plugin-vue-distributed-internal',
     apply: 'build',
     enforce: 'pre',
 
@@ -45,7 +45,7 @@ const plugin = (): Plugin => {
           ...loadPackageData(),
         };
 
-        const str = `build: ${JSON.stringify(infoObject, null, 2)},`
+        const str = Buffer.from(JSON.stringify(infoObject)).toString('base64');
         code = code.replace(
           '/**----$_vue-distributed-build-inject_$----**/',
           str
