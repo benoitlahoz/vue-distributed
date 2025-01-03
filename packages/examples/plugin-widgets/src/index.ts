@@ -1,6 +1,6 @@
 /**
  * An example of distributed vue plugin entry point.
- * Warning: do not import external dependencies here, unless you add the to the global window's scope.
+ * Warning: do not import external dependencies here, unless you bundle them with the plugin.
  */
 
 import type { ModuleDefinition } from 'vue-distributed';
@@ -23,6 +23,11 @@ export const plugin: ModuleDefinition = {
       email: 'info@benoitlahoz.io',
       url: 'www.benoitlahoz.io',
     },
+  },
+
+  metadata: {
+    foo: 'bar',
+    ack: () => 'baz',
   },
 
   // ThreeComponent depends on 'three'.
