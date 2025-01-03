@@ -76,7 +76,7 @@ const VitePluginVueDistributed = (
               ...res,
             },
             // Warning: do NOT remove, 'vue-distributed' version data will be injected at its build time.
-            /**----$_vue-distributed-build-inject_$----**/
+            build: '/**----$_vue-distributed-build-inject_$----**/',
           };
         }
       }
@@ -126,10 +126,13 @@ const VitePluginVueDistributed = (
 
       outputJson = {
         ...outputJson,
-        sri: `sha384-${hash}`
-      }
+        sri: `sha384-${hash}`,
+      };
 
-      writeFileSync(resolve(outputDir, `${outputFile}.json`), JSON.stringify(outputJson, null, 2));
+      writeFileSync(
+        resolve(outputDir, `${outputFile}.json`),
+        JSON.stringify(outputJson, null, 2)
+      );
 
       if (archive) {
         // Compress.
