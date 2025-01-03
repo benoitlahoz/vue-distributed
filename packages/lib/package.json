@@ -1,6 +1,6 @@
 {
   "name": "vue-distributed",
-  "version": "0.9.431",
+  "version": "0.9.439",
   "author": {
     "name": "Benoît LAHOZ",
     "email": "info@benoitlahoz.io"
@@ -59,7 +59,7 @@
   "main": "./dist/vue-distributed.umd.js",
   "module": "./dist/vue-distributed.mjs",
   "scripts": {
-    "prebuild": "npm version patch",
+    "prebuild": "yarn version -patch",
     "build": "rimraf ./dist && vite build && yarn build:plugin",
     "build:plugin": "vite build --config vite.plugin.config.mts",
     "test": "vitest"
