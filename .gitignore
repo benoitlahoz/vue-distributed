@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Example plugin
+packages/examples/app-vite-serve/public/vue-plugin-widgets*.*
